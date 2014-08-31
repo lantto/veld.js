@@ -202,7 +202,6 @@ var end = function(callback) {
 
 var veld = {
     init: init,
-    entities: entities,
     Entity: Entity,
     addEntity: addEntity,
     removeEntity: removeEntity,
