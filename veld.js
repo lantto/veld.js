@@ -69,12 +69,7 @@ var Entity = (function() {
     }
     
     Entity.prototype.setDirection = function(direction) {
-        var velocity = calculateVelocity(direction);
-        
-        this.velocity = {
-            x: velocity.x,
-            y: velocity.y
-        } 
+        this.velocity = calculateVelocity(direction);
     }
 
     return Entity;
