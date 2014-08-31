@@ -25,6 +25,8 @@ var Entity = (function() {
     
         this.x = x || 0;
         this.y = y || 0;
+        this.width = 0;
+        this.height = 0;
         
         this.direction = direction || 180;
         this.speed = speed || 100;
@@ -39,8 +41,8 @@ var Entity = (function() {
         this.y += this.velocity.y * dt;
         
         if (this.bounceAtBoundaries) {
-            if (this.x > canvas.width) {
-                this.x = canvas.width;
+            if (this.x > canvas.width - this.width) {
+                this.x = canvas.width - this.width;
                 this.velocity.x = -this.velocity.x;
             }
             
@@ -49,8 +51,8 @@ var Entity = (function() {
                 this.velocity.x = -this.velocity.x;
             }
             
-            if (this.y > canvas.height) {
-                this.y = canvas.height;
+            if (this.y > canvas.height - this.height) {
+                this.y = canvas.height - this.height;
                 this.velocity.y = -this.velocity.y;
             }
             
