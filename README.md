@@ -12,49 +12,40 @@ Tiny HTML5 game framework
 <script>
 
 var Hero = (function() {
-    function Hero(x, y, direction) {
-        veld.Entity.call(this, x, y, direction);
+    function Hero(x, y, direction, speed) {
+        veld.Entity.apply(this, arguments);
         
         this.sprite = 'hero.png';
+        this.width = 16;
+        this.height = 14;
     }
     
     Hero.prototype = Object.create(veld.Entity.prototype);
-    
-    Hero.prototype.update = function() {
-        veld.Entity.prototype.update.call(this);
-        
-        if (
-            this.x > 512
-            || this.x < 0
-            || this.y > 512
-            || this.y < 0
-        ) {
-            console.log('DIED', this);
-            veld.removeEntity(this);
-        }
-    }
 
     return Hero;
 })();
 
 var Slime = (function() {
-    function Slime(x, y, direction) {
-        veld.Entity.call(this, x, y, direction);
+    function Slime(x, y, direction, speed) {
+        veld.Entity.apply(this, arguments);
+        
         this.sprite = 'slime.png';
+        this.width = 24;
+        this.height = 16;
     }
     
     Slime.prototype = Object.create(veld.Entity.prototype);
     
-    Slime.prototype.update = function() {
-        veld.Entity.prototype.update.call(this);
+    Slime.prototype.update = function(dt) {
+        veld.Entity.prototype.update.call(this, dt);
         
-        if (
-            this.x > 512
-            || this.x < 0
-            || this.y > 512
-            || this.y < 0
-        ) {
-            console.log('DIED', this);
+        if (this.collidesWith(hero)) {
+            veld.end(function() {
+                alert('You lost.');
+            });
+        }
+        
+        if (veld.mouse.down && this.collidesWith(veld.mouse)) {
             veld.removeEntity(this);
         }
     }
@@ -67,19 +58,15 @@ veld.resources.load([
     'slime.png'
 ]);
 
+var hero, slimeOne;
+
 veld.init(
     'game', 
     function() {
-        console.log(veld.addEntity(new Hero(0, 0, 135)));
-        console.log(veld.addEntity(new Slime(250, 400, 15)));
-        console.log(veld.addEntity(new Hero(400, 0, 200)));
-        console.log(veld.addEntity(new Slime(50, 50, 90)));
-    },
-    function() {
-        if (veld.entities.length === 0) {
-            veld.end(function() {
-                alert('You lost.');
-            });
+        hero = veld.addEntity(new Hero(120, 400, veld.utils.random(1, 360), 50));
+        
+        for (var i = 0; i < 100; i++) {
+            veld.addEntity(new Slime(400, 120, veld.utils.random(1, 360), 50));
         }
     }
 );
