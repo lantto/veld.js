@@ -27,13 +27,12 @@ var Entity = (function() {
         this.y = y || 0;
         this.width = 0;
         this.height = 0;
+
+        this.setDirection(direction || 180);
         
-        this.direction = direction || 180;
         this.speed = speed || 100;
         
         this.bounceAtBoundaries = true;
-
-        this._setVelocity();
     }
 
     Entity.prototype.update = function(dt) {
@@ -70,12 +69,7 @@ var Entity = (function() {
     }
     
     Entity.prototype.setDirection = function(direction) {
-        this.direction = direction;
-        this._setVelocity();
-    }
-    
-    Entity.prototype._setVelocity = function() {
-        var velocity = calculateVelocity(this.direction);
+        var velocity = calculateVelocity(direction);
         
         this.velocity = {
             x: velocity.x,
