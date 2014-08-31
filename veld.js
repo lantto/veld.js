@@ -173,8 +173,17 @@ var resources = (function() {
     };
 })();
 
-var random = function(min,max) {
+var random = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+var getMousePos = function(evt) {
+    var rect = canvas.getBoundingClientRect();
+    
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
 }
 
 /**********************************
@@ -187,11 +196,26 @@ var entities = [];
  * GAME
  **********************************/
 
-var canvas, ctx, update, lastTime, running = true;
+var canvas, 
+    ctx, 
+    update, 
+    lastTime, 
+    running = true,
+    mouse = {x: 0, y: 0, down: false, width: 1, height: 1};
  
 var init = function(canvasId, startCallback, updateCallback) {
     canvas = document.getElementById(canvasId);
     ctx = canvas.getContext('2d');
+    
+    canvas.addEventListener('mousemove', function(evt) {
+        var rect = canvas.getBoundingClientRect();
+        mouse.x = evt.clientX - rect.left;
+        mouse.y = evt.clientY - rect.top;
+    }, false);
+    
+    canvas.addEventListener('mousedown', function(evt) {
+        mouse.down = true;
+    }, false);
     
     resources.onReady(function() {
         startCallback();
@@ -222,6 +246,8 @@ var loop = function() {
     }
     
     update();
+    
+    if (mouse.down === true) mouse.down = false;
     
     lastTime = now;
     
@@ -257,7 +283,8 @@ var veld = {
     resources: {
         load: resources.load
     },
-    end: end
+    end: end,
+    mouse: mouse
 };
 
 window.veld = veld;
