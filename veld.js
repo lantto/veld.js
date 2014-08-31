@@ -28,10 +28,10 @@ var Entity = (function() {
         this.speed = 1;
     }
 
-    Entity.prototype.update = function() {
+    Entity.prototype.update = function(dt) {
         var velocity = calculateVelocity(this.direction, this.speed);
-        this.x += velocity.x;
-        this.y += velocity.y;
+        this.x += velocity.x * dt;
+        this.y += velocity.y * dt;
     }
 
     Entity.prototype.render = function() {
@@ -143,7 +143,7 @@ var entities = [];
  * GAME
  **********************************/
 
-var canvas, ctx, update, running = true;
+var canvas, ctx, update, lastTIme, running = true;
  
 var init = function(canvasId, startCallback, updateCallback) {
     canvas = document.getElementById(canvasId);
@@ -161,9 +161,12 @@ var init = function(canvasId, startCallback, updateCallback) {
 
 var loop = function() {
     if (!running) return;
+    
+    var now = Date.now();
+    var dt = (now - lastTime) / 1000.0;    
 
     for (var i = 0; i < entities.length; i++) {
-        entities[i].update();
+        entities[i].update(dt);
     }
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -173,6 +176,8 @@ var loop = function() {
     }
     
     update();
+    
+    lastTime = now;
     
     requestAnimFrame(loop);
 };
