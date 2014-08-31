@@ -1,7 +1,7 @@
 veld.js
 =======
 
-Tiny HTML5 game framework
+Tiny HTML5 game framework.
 
 # Basic usage
 
