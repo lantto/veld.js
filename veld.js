@@ -37,8 +37,8 @@ var Entity = (function() {
     }
 
     Entity.prototype.update = function(dt) {
-        this.x += this.velocity.x * dt;
-        this.y += this.velocity.y * dt;
+        this.x += this.velocity.x * this.speed * dt;
+        this.y += this.velocity.y * this.speed * dt;
         
         if (this.bounceAtBoundaries) {
             if (this.x > canvas.width - this.width) {
@@ -69,18 +69,13 @@ var Entity = (function() {
         }
     }
     
-    Entity.prototype.setSpeed = function(speed) {
-        this.speed = speed;
-        this._setVelocity();
-    }
-    
     Entity.prototype.setDirection = function(direction) {
         this.direction = direction;
         this._setVelocity();
     }
     
     Entity.prototype._setVelocity = function() {
-        var velocity = calculateVelocity(this.direction, this.speed);
+        var velocity = calculateVelocity(this.direction);
         
         this.velocity = {
             x: velocity.x,
@@ -95,13 +90,13 @@ var Entity = (function() {
  * UTILITES
  **********************************/
 
-var calculateVelocity = function(degrees, speed) {
+var calculateVelocity = function(degrees) {
     var x, y;
     
     var radians = degrees * (Math.PI / 180);
     
-    x = speed * Math.sin(radians);
-    y = speed * Math.cos(radians) * -1;
+    x = Math.sin(radians);
+    y = Math.cos(radians) * -1;
     
     return {x: x, y: y};
 }
