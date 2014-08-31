@@ -71,6 +71,18 @@ var Entity = (function() {
     Entity.prototype.setDirection = function(direction) {
         this.velocity = calculateVelocity(direction);
     }
+    
+    Entity.prototype.collidesWith = function(otherEntity) {
+        if (this.x < otherEntity.x + otherEntity.width 
+            && this.x + this.width > otherEntity.x
+            && this.y < otherEntity.y + otherEntity.height 
+            && this.height + this.y > otherEntity.y
+        ) {
+            return true;
+        }
+        
+        return false;
+    }
 
     return Entity;
 })();
