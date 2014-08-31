@@ -20,24 +20,70 @@ var requestAnimFrame = (function(){
  **********************************/
 
 var Entity = (function() {
-    function Entity(x, y, direction) {
+    function Entity(x, y, direction, speed) {
+        var velocity;
+    
         this.x = x || 0;
         this.y = y || 0;
-        this.direction = direction || 180;
         
-        this.speed = 1;
+        this.direction = direction || 180;
+        this.speed = speed || 100;
+        
+        this.bounceAtBoundaries = true;
+
+        this._setVelocity();
     }
 
     Entity.prototype.update = function(dt) {
-        var velocity = calculateVelocity(this.direction, this.speed);
-        this.x += velocity.x * dt;
-        this.y += velocity.y * dt;
+        this.x += this.velocity.x * dt;
+        this.y += this.velocity.y * dt;
+        
+        if (this.bounceAtBoundaries) {
+            if (this.x > canvas.width) {
+                this.x = canvas.width;
+                this.velocity.x = -this.velocity.x;
+            }
+            
+            if (this.x < 0) {
+                this.x = 0;
+                this.velocity.x = -this.velocity.x;
+            }
+            
+            if (this.y > canvas.height) {
+                this.y = canvas.height;
+                this.velocity.y = -this.velocity.y;
+            }
+            
+            if (this.y < 0) {
+                this.y = 0;
+                this.velocity.y = -this.velocity.y;
+            }
+        }
     }
 
     Entity.prototype.render = function() {
         if (this.sprite) {
             ctx.drawImage(resources.get(this.sprite), this.x, this.y);
         }
+    }
+    
+    Entity.prototype.setSpeed = function(speed) {
+        this.speed = speed;
+        this._setVelocity();
+    }
+    
+    Entity.prototype.setDirection = function(direction) {
+        this.direction = direction;
+        this._setVelocity();
+    }
+    
+    Entity.prototype._setVelocity = function() {
+        var velocity = calculateVelocity(this.direction, this.speed);
+        
+        this.velocity = {
+            x: velocity.x,
+            y: velocity.y
+        } 
     }
 
     return Entity;
@@ -143,7 +189,7 @@ var entities = [];
  * GAME
  **********************************/
 
-var canvas, ctx, update, lastTIme, running = true;
+var canvas, ctx, update, lastTime, running = true;
  
 var init = function(canvasId, startCallback, updateCallback) {
     canvas = document.getElementById(canvasId);
@@ -155,6 +201,8 @@ var init = function(canvasId, startCallback, updateCallback) {
         update = updateCallback || function () {};
         
         // Start the game
+        lastTime = Date.now();
+        
         loop();
     });
 };
