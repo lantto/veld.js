@@ -58,7 +58,7 @@ veld.resources.load([
     'slime.png'
 ]);
 
-var hero, slimeOne;
+var hero;
 
 veld.init(
     'game', 
