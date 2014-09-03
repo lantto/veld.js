@@ -37,8 +37,6 @@ var Slime = (function() {
     Slime.prototype = Object.create(veld.Entity.prototype);
     
     Slime.prototype.update = function(dt) {
-        veld.Entity.prototype.update.call(this, dt);
-        
         if (this.collidesWith(hero)) {
             veld.end(function() {
                 alert('You lost.');
@@ -48,6 +46,8 @@ var Slime = (function() {
         if (veld.mouse.down && this.collidesWith(veld.mouse)) {
             veld.removeEntity(this);
         }
+        
+        veld.Entity.prototype.update.call(this, dt);
     }
 
     return Slime;
