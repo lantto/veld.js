@@ -197,9 +197,10 @@ var canvas,
     lastTime, 
     running = true,
     mouse = {x: 0, y: 0, down: false, width: 1, height: 1},
-    keys = {down: null};
+    keys = {down: null},
+    background;
  
-var init = function(canvasId, startCallback, updateCallback) {
+var init = function(canvasId, startCallback, updateCallback, bg) {
     canvas = document.getElementById(canvasId);
     ctx = canvas.getContext('2d');
     
@@ -213,18 +214,19 @@ var init = function(canvasId, startCallback, updateCallback) {
         mouse.down = true;
     }, false);
     
-    window.addEventListener('keydown', function (e) {
+    window.addEventListener('keydown', function(e) {
         keys.down = e.keyCode;
     }, false);
     
-    window.addEventListener('keyup', function (e) {
+    window.addEventListener('keyup', function(e) {
         keys.down = null;
     }, false);
     
     resources.onReady(function() {
         startCallback();
         
-        update = updateCallback || function () {};
+        update = updateCallback || function() {};
+        background = bg;
         
         // Start the game
         lastTime = Date.now();
@@ -244,6 +246,10 @@ var loop = function() {
     }
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (background) {
+        ctx.drawImage(resources.get(background), 0, 0);
+    }
     
     for (var i = 0; i < entities.length; i++) {
         entities[i].render();
