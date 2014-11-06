@@ -192,7 +192,8 @@ var canvas,
     update, 
     lastTime, 
     running = true,
-    mouse = {x: 0, y: 0, down: false, width: 1, height: 1};
+    mouse = {x: 0, y: 0, down: false, width: 1, height: 1},
+    keys = {down: null};
  
 var init = function(canvasId, startCallback, updateCallback) {
     canvas = document.getElementById(canvasId);
@@ -206,6 +207,14 @@ var init = function(canvasId, startCallback, updateCallback) {
     
     canvas.addEventListener('mousedown', function(evt) {
         mouse.down = true;
+    }, false);
+    
+    window.addEventListener('keydown', function (e) {
+        keys.down = e.keyCode;
+    }, false);
+    
+    window.addEventListener('keyup', function (e) {
+        keys.down = null;
     }, false);
     
     resources.onReady(function() {
@@ -275,7 +284,8 @@ var veld = {
         load: resources.load
     },
     end: end,
-    mouse: mouse
+    mouse: mouse,
+    keys: keys
 };
 
 window.veld = veld;
