@@ -43,8 +43,8 @@ var Entity = (function() {
         if (this.bounceAtBoundaries) {
             // TODO: Update direction property when bouncing
         
-            if (this.x > canvas.width - this.width) {
-                this.x = canvas.width - this.width;
+            if (this.x > gameWidth - this.width) {
+                this.x = gameWidth - this.width;
                 this.velocity.x = -this.velocity.x;
             }
             
@@ -53,8 +53,8 @@ var Entity = (function() {
                 this.velocity.x = -this.velocity.x;
             }
             
-            if (this.y > canvas.height - this.height) {
-                this.y = canvas.height - this.height;
+            if (this.y > gameHeight - this.height) {
+                this.y = gameHeight - this.height;
                 this.velocity.y = -this.velocity.y;
             }
             
@@ -198,11 +198,16 @@ var canvas,
     running = true,
     mouse = {x: 0, y: 0, down: false, width: 1, height: 1},
     keys = {down: null},
-    background;
+    background,
+    gameWidth,
+    gameHeight;
  
-var init = function(canvasId, startCallback, updateCallback, bg) {
+var init = function(canvasId, startCallback, updateCallback, bg, width, height) {
     canvas = document.getElementById(canvasId);
     ctx = canvas.getContext('2d');
+    
+    gameWidth = width || canvas.width;
+    gameHeight = height || canvas.height;
     
     canvas.addEventListener('mousemove', function(evt) {
         var rect = canvas.getBoundingClientRect();
