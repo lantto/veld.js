@@ -67,12 +67,21 @@ var Entity = (function() {
 
     Entity.prototype.render = function() {
         var x = this.x,
-            y = this.y;
+            y = this.y,
+            self = this;
     
         if (this.sprite) {
             if (viewport) {
                 x = this.x - viewport.entity.x + (viewport.width / 2) - (this.width / 2);
                 y = this.y - viewport.entity.y + (viewport.height / 2) - (this.height / 2);
+            }
+
+            if (options.rotateViewport && viewport.entity === this) {
+                // TODO: Rotate the entity accordingly instead
+                deferredDraws.push(function() {
+                    ctx.drawImage(resources.get(self.sprite), x, y);
+                });
+                return;
             }
             
             ctx.drawImage(resources.get(this.sprite), x, y);
@@ -210,7 +219,8 @@ var canvas,
     gameWidth,
     gameHeight,
     viewport,
-    options;
+    options,
+    deferredDraws = [];
  
 var init = function(canvasId, startCallback, updateCallback, bg, width, height, opts) {
     canvas = document.getElementById(canvasId);
@@ -281,6 +291,14 @@ var loop = function() {
     }
     
     ctx.restore();
+    
+    if (deferredDraws.length > 0) {
+        for (var i = 0; i < deferredDraws.length; i++) {
+            deferredDraws[i]();
+        }
+        
+        deferredDraws = [];
+    }
     
     update();
     
