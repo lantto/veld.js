@@ -66,8 +66,16 @@ var Entity = (function() {
     }
 
     Entity.prototype.render = function() {
+        var x = this.x,
+            y = this.y;
+    
         if (this.sprite) {
-            ctx.drawImage(resources.get(this.sprite), this.x, this.y);
+            if (viewport) {
+                x = this.x - viewport.entity.x + (viewport.width / 2) - (this.width / 2);
+                y = this.y - viewport.entity.y + (viewport.height / 2) - (this.height / 2);
+            }
+            
+            ctx.drawImage(resources.get(this.sprite), x, y);
         }
     }
     
@@ -200,7 +208,8 @@ var canvas,
     keys = {down: null},
     background,
     gameWidth,
-    gameHeight;
+    gameHeight,
+    viewport;
  
 var init = function(canvasId, startCallback, updateCallback, bg, width, height) {
     canvas = document.getElementById(canvasId);
@@ -208,7 +217,7 @@ var init = function(canvasId, startCallback, updateCallback, bg, width, height) 
     
     gameWidth = width || canvas.width;
     gameHeight = height || canvas.height;
-    
+
     canvas.addEventListener('mousemove', function(evt) {
         var rect = canvas.getBoundingClientRect();
         mouse.x = evt.clientX - rect.left;
@@ -253,7 +262,7 @@ var loop = function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     if (background) {
-        ctx.drawImage(resources.get(background), 0, 0);
+        ctx.drawImage(resources.get(background), -viewport.entity.x + viewport.width / 2 - viewport.entity.width / 2, -viewport.entity.y + viewport.height / 2 - viewport.entity.height / 2);
     }
     
     for (var i = 0; i < entities.length; i++) {
@@ -283,6 +292,14 @@ var end = function(callback) {
     callback();
 };
 
+var setViewport = function(entity) {
+    viewport = {
+        entity: entity,
+        width: canvas.width,
+        height: canvas.height
+    }
+}
+
 /**********************************
  * EXPORT
  **********************************/
@@ -300,7 +317,8 @@ var veld = {
     },
     end: end,
     mouse: mouse,
-    keys: keys
+    keys: keys,
+    setViewport: setViewport
 };
 
 window.veld = veld;
