@@ -209,14 +209,17 @@ var canvas,
     background,
     gameWidth,
     gameHeight,
-    viewport;
+    viewport,
+    options;
  
-var init = function(canvasId, startCallback, updateCallback, bg, width, height) {
+var init = function(canvasId, startCallback, updateCallback, bg, width, height, opts) {
     canvas = document.getElementById(canvasId);
     ctx = canvas.getContext('2d');
     
     gameWidth = width || canvas.width;
     gameHeight = height || canvas.height;
+    
+    options = opts || {};
 
     canvas.addEventListener('mousemove', function(evt) {
         var rect = canvas.getBoundingClientRect();
@@ -261,6 +264,14 @@ var loop = function() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    ctx.save();
+    
+    if (options.rotateViewport) {
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(-viewport.entity.direction * Math.PI / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+    }
+    
     if (background) {
         ctx.drawImage(resources.get(background), -viewport.entity.x + viewport.width / 2 - viewport.entity.width / 2, -viewport.entity.y + viewport.height / 2 - viewport.entity.height / 2);
     }
@@ -268,6 +279,8 @@ var loop = function() {
     for (var i = 0; i < entities.length; i++) {
         entities[i].render();
     }
+    
+    ctx.restore();
     
     update();
     
