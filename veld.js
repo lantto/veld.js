@@ -27,6 +27,7 @@ var Entity = (function() {
         this.y = y || 0;
         this.width = 0;
         this.height = 0;
+        this.direction = null;
 
         this.setDirection(direction || 180);
         
@@ -38,8 +39,10 @@ var Entity = (function() {
     Entity.prototype.update = function(dt) {
         this.x += this.velocity.x * this.speed * dt;
         this.y += this.velocity.y * this.speed * dt;
-        
+
         if (this.bounceAtBoundaries) {
+            // TODO: Update direction property when bouncing
+        
             if (this.x > canvas.width - this.width) {
                 this.x = canvas.width - this.width;
                 this.velocity.x = -this.velocity.x;
@@ -70,6 +73,7 @@ var Entity = (function() {
     
     Entity.prototype.setDirection = function(direction) {
         this.velocity = calculateVelocity(direction);
+        this.direction = direction;
     }
     
     Entity.prototype.collidesWith = function(otherEntity) {
